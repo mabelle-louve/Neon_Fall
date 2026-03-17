@@ -25,7 +25,7 @@ ctx.fillStyle = "blue";
 ctx.fillRect(player.x, player.y, player.width, player.height);
 
 //Update blocks
-blocks.forEach((block, i) +> {
+blocks.forEach((block, i) => {
   block.y += block.speed;
   ctx.fillStyle = "red";
   ctx.fillRect(block.x, block.y, block.width, block.height);
