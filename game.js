@@ -16,9 +16,9 @@ function createBlock() {
   blocks.push({ x, y: 0, width: 30, height: 30, speed: 2 + Math.random() * 3 });
 }
 
-fuction update() {
+function update() {
 if(gameOver) return;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 //Draw Player
 ctx.fillStyle = "blue";
