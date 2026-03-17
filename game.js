@@ -51,7 +51,7 @@ ctx.font = "20px Arial";
 ctx.fillText(`Score: ${score}`, 10, 30);
 
 score+= 1;
-requestAnimationFrame(updtae);
+requestAnimationFrame(update);
 }
 
 //Generate blocks every 1 second
