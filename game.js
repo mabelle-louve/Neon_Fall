@@ -25,7 +25,7 @@ ctx.fillStyle = "blue";
 ctx.fillRect(player.x, player.y, player.width, player.height);
 
 //Update blocks
-blocks.forEach(block, i) => {
+blocks.forEach((block, i) => {
   block.y += block.speed;
   ctx.fillStyle = "red";
   ctx.fillRect(block.x, block.y, block.width, block.height);
@@ -34,21 +34,21 @@ blocks.forEach(block, i) => {
 if (
   player.x < block.x + block.width &&
   player.x + player.width > block.x &&
-  player.y < block.ye +block.height &&
-  player.y +player.height > block.y
+  player.y < block.y +block.height &&
+  player.y + player.height > block.y
   ) {
   gameover = true;
   alert(`Game Over! score: ${score}`);
 }
 
 //Remove Blocks Offscreen
-if(block.y > canvas.height) blocks.splice(1, 1);
+if(block.y > canvas.height) blocks.splice(i, 1);
 });
 
 //Score
 ctx.fillStyle = "black";
 ctx.font = "20px Arial";
-ctx.fillText(`score: ${score}`, 10, 30);
+ctx.fillText(`Score: ${score}`, 10, 30);
 
 score+= 1;
 requestAnimationFrame(updtae);
