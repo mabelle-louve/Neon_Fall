@@ -75,7 +75,7 @@ function draw() {
 
   // Player Movement
   if(keys["ArrowLeft"]) player.move("left");
-  if(keys["ArrowRight"]( player.move("right");
+  if(keys["ArrowRight"]) player.move("right");
 
   player.draw();
 
