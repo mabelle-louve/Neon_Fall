@@ -55,7 +55,9 @@ this.pulseSpeed = 0.05 + Math.random() * 0.05;
   ctx.shadowBlur = 0;
 }
   }
-  update() { this.y += this.speed; }
+  update() { this.y += this.speed; {
+  this.y += this.speed;
+  this.pulse += this.pulseSpeed; // ✅ this makes the glow animate
 }
 
 let player = new Player();
@@ -106,11 +108,11 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
       ) {
       gameOver = true;
       overlay.innerHTML = `<div>Game Over! Score: ${score}</div>
-      <button onclick='resetGame()">Play Again</button>`;
+      <button onclick="resetGame()">Play Again</button>`;
       }
 
       // Remove Offscreen
-      if(block.y > canvas.height) blocks.splice(1, 1);
+      if(block.y > canvas.height) blocks.splice(i, 1);
   });
 
 // Score
@@ -125,9 +127,7 @@ function update() {
     score++;
     if(score % 500 === 0) blockSpeed += 0.5; // gradually increase difficulty
     requestAnimationFrame(update);
-    this.y += this.speed;
-this.pulse += this.pulseSpeed;
-  }
+      }
 }
 
 // Start spawning blocks
