@@ -2,18 +2,19 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const overlay = document.getElementById("overlay");
 
+// ---------------- Player ----------------
 class Player {
   constructor () {
     this.width = 40;
-    this.height = 40;
+    this.height = 20;
     this.x = (canvas.width - this.width) / 2;
     this.y = canvas.height - this.height - 10;
     this.speed = 5;
-    this.color = "cyan";
+    this.color = "white";
   }
 
   draw() {
-    ctx.shadowBlur = 15;
+    ctx.shadowBlur = 10;
   ctx.shadowColor = this.color;
 
   ctx.fillStyle = this.color;
@@ -27,9 +28,12 @@ class Player {
     if(direction === "right") this.x += this.speed;
     // Keep Inside Canvas
     if(this.x < 0) this.x = 0;
-    if(this.x + this.width > canvas.width) this.x = canvas.width - this.width;
+    if(this.x + this.width > canvas.width) { this.x = canvas.width - this.width;
+    }
   }
 }
+
+// ---------------- Block ----------------
 class Block {
   constructor(speed) {
     this.width = 30 + Math.random() * 20;
@@ -54,12 +58,14 @@ this.pulseSpeed = 0.05 + Math.random() * 0.05;
 
   ctx.shadowBlur = 0;
 }
-  }
+
   update() {
   this.y += this.speed;
   this.pulse += this.pulseSpeed; // ✅ this makes the glow animate
+  }
 }
 
+// ---------------- Game State ----------------
 let player = new Player();
 let blocks = [];
 let score = 0;
@@ -68,11 +74,14 @@ let keys = {};
 let blockSpeed = 2;
 let spawnRate = 1000; // Milliseconds
 
+// ---------------- Controls ----------------
 document.addEventListener("keydown", (e) => keys[e.key] = true);
 document.addEventListener("keyup", (e) => keys[e.key] = false);
 
+// ---------------- Game Functions ----------------
 function spawnBlock() {
-  if(!gameOver) blocks.push(new Block(blockSpeed));
+  if(!gameOver) { blocks.push(new Block(blockSpeed));
+}
 }
 
 function resetGame() {
@@ -82,9 +91,11 @@ function resetGame() {
   gameOver = false;
   blockSpeed = 2;
   overlay.innerHTML = "";
+  update(); // restart loop
 }
 
 function draw() {
+  // trailing effect
   ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -112,10 +123,12 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
       // Remove Offscreen
-      if(block.y > canvas.height) blocks.splice(i, 1);
+      if(block.y > canvas.height) { blocks.splice(i, 1);
+      }
   });
 
 // Score
+  ctx.shadowBlur = 0;
 ctx.fillStyle = "white";
   ctx.font = "20px Arial";
   ctx.fillText(`Score: ${score}`, 10, 30);
