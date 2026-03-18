@@ -38,9 +38,15 @@ class Block {
     this.y = -this.height;
     this.speed = speed;
     this.color = `hsl(${Math.random() * 360}, 80%, 60%)`;
+    this.pulse = Math.random() * Math.PI * 2; // random starting phase
+this.pulseSpeed = 0.05 + Math.random() * 0.05;
   }
   draw() {
-    ctx.shadowBlur = 15;
+    // Pulse effect (value between 0 and 1)
+  const glow = (Math.sin(this.pulse) + 1) / 2;
+
+  // Apply pulsing glow strength
+  ctx.shadowBlur = 10 + glow * 20;
   ctx.shadowColor = this.color;
 
   ctx.fillStyle = this.color;
@@ -77,7 +83,8 @@ function resetGame() {
 }
 
 function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Player Movement
   if(keys["ArrowLeft"]) player.move("left");
@@ -118,6 +125,8 @@ function update() {
     score++;
     if(score % 500 === 0) blockSpeed += 0.5; // gradually increase difficulty
     requestAnimationFrame(update);
+    this.y += this.speed;
+this.pulse += this.pulseSpeed;
   }
 }
 
