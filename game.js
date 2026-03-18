@@ -55,7 +55,7 @@ this.pulseSpeed = 0.05 + Math.random() * 0.05;
   ctx.shadowBlur = 0;
 }
   }
-  update() { this.y += this.speed; {
+  update() {
   this.y += this.speed;
   this.pulse += this.pulseSpeed; // ✅ this makes the glow animate
 }
