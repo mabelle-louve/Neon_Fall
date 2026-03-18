@@ -97,7 +97,7 @@ function resetGame() {
 function draw() {
   // trailing effect
   ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
-ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Player Movement
   if(keys["ArrowLeft"]) player.move("left");
@@ -110,6 +110,12 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
     block.update();
     block.draw();
 
+    // Score when block passes player
+    if (!block.scored && block.y > player.y + player.height) {
+      score++;
+      block.scored = true;
+    }
+    
     // Collision
     if (
       player.x < block.x + block.width &&
@@ -127,18 +133,18 @@ ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
   });
 
-// Score
+// Score display
   ctx.shadowBlur = 0;
-ctx.fillStyle = "white";
+  ctx.fillStyle = "white";
   ctx.font = "20px Arial";
   ctx.fillText(`Score: ${score}`, 10, 30);
 }
-
+  // ---------------- Main Loop ----------------
 function update() {
   if(!gameOver) {
     draw();
     score++;
-    if(score % 500 === 0) blockSpeed += 0.5; // gradually increase difficulty
+    if(score % 500 === 0) { blockSpeed += 0.05;} // gradually increase difficulty
     requestAnimationFrame(update);
       }
 }
