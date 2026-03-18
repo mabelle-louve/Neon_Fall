@@ -40,8 +40,14 @@ class Block {
     this.color = `hsl(${Math.random() * 360}, 80%, 60%)`;
   }
   draw() {
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.shadowBlur = 15;
+  ctx.shadowColor = this.color;
+
+  ctx.fillStyle = this.color;
+  ctx.fillRect(this.x, this.y, this.width, this.height);
+
+  ctx.shadowBlur = 0;
+}
   }
   update() { this.y += this.speed; }
 }
