@@ -5,15 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Neon Fall</title>
   <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
     canvas {
-      border: 2px solid #333;
+      border: 2px solid #fff;
       display: block;
       margin: 50px auto;
-      background: #eee;
+      background: linear=gradient(to bottom, #444, #111);
+    }
+    #overlay {
+      position: absolute;
+      color: white;
+      text-lign: center;
+      font-size: 24px;
+      top: 20px;
+      width: 100%;
+    }
+    button {
+      font-size: 18px;
+      padding: 10px 20px;
+      margin-top: 20px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
+  <div id="overlay"></div> 
   <canvas id="gameCanvas" width="400" height="600"></canvas>
   <script src="game.js"></script>
 </body>
