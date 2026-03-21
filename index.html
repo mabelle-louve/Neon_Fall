@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neon Fall</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0a0f;
+      font-family: 'Share Tech Mono', monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Scanlines */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent, transparent 2px,
+        rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px
+      );
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Neon grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,245,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,255,0.025) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Canvas wrapper — mirrors .game-frame from portfolio */
+    .game-wrap {
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(0,245,255,0.3);
+      box-shadow:
+        0 0 0 1px rgba(0,245,255,0.08),
+        0 0 40px rgba(0,245,255,0.08),
+        0 0 80px rgba(0,245,255,0.04);
+    }
+
+    canvas {
+      display: block;
+      background: #0a0a0f;
+    }
+
+    /* Corner labels — same as portfolio */
+    .corner {
+      position: absolute;
+      font-size: 0.5rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(0,245,255,0.4);
+      pointer-events: none;
+      z-index: 5;
+    }
+    .c-tl { top: 8px; left: 10px; }
+    .c-tr { top: 8px; right: 10px; }
+
+    /* Overlay — centered inside the canvas, same as portfolio panel */
+    #overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      z-index: 10;
+      pointer-events: none;
+      color: #e8e8f0;
+    }
+
+    #overlay > * { pointer-events: auto; }
+
+    /* "NEON FALL" — plain Share Tech Mono, cyan, matching portfolio panel */
+    .ol-title {
+      font-size: 1.3rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #00f5ff;
+      text-shadow: 0 0 16px #00f5ff, 0 0 40px rgba(0,245,255,0.25);
+    }
+
+    .ol-hint {
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #6a6a82;
+    }
+
+    /* Score line shown on game over */
+    .ol-score {
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      color: #ffe600;
+      text-shadow: 0 0 12px #ffe600;
+    }
+
+    /* Game over label */
+    .ol-gameover {
+      font-size: 1.1rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #ff2d78;
+      text-shadow: 0 0 16px #ff2d78;
+    }
+
+    /* Button — exact match of portfolio's cyan-outline button */
+    button {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 9px 20px;
+      background: transparent;
+      border: 1px solid #00f5ff;
+      color: #00f5ff;
+      cursor: pointer;
+      text-shadow: 0 0 8px #00f5ff;
+      box-shadow: 0 0 14px rgba(0,245,255,0.12), inset 0 0 14px rgba(0,245,255,0.03);
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background: rgba(0,245,255,0.08);
+      box-shadow: 0 0 24px rgba(0,245,255,0.22), inset 0 0 18px rgba(0,245,255,0.07);
+      transform: translateY(-1px);
+    }
+
+    button:active { transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <div class="game-wrap">
+    <span class="corner c-tl">Neon Fall</span>
+    <span class="corner c-tr">Live</span>
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
+    <div id="overlay"></div>
+  </div>
+
+  <script src="game.js"></script>
+  <script>
+    const overlay = document.getElementById('overlay');
+
+    function showStart() {
+      overlay.style.display = 'flex';
+      overlay.innerHTML = `
+        <div class="ol-title">Neon Fall</div>
+        <div class="ol-hint">Use Arrow Keys</div>
+        <button onclick="startGame()">Start Game</button>
+      `;
+    }
+
+    function showGameOver(score) {
+      overlay.style.display = 'flex';
+      overlay.innerHTML = `
+        <div class="ol-gameover">Game Over</div>
+        <div class="ol-score">Score: ${score}</div>
+        <button onclick="startGame()">Play Again</button>
+      `;
+    }
+
+    function startGame() {
+      overlay.style.display = 'none';
+      overlay.innerHTML = '';
+      resetGame();
+    }
+
+    // MutationObserver: intercept game.js writing to overlay
+    const mo = new MutationObserver(() => {
+      const html = overlay.innerHTML;
+      if (html.includes('Game Over!') && !html.includes('ol-gameover')) {
+        const m = html.match(/Score:\s*(\d+)/);
+        showGameOver(m ? m[1] : '0');
+      }
+    });
+    mo.observe(overlay, { childList: true, subtree: true });
+
+    // Patch resetGame so it hides overlay and keeps observer alive
+    const _orig = window.resetGame;
+    window.resetGame = function () {
+      overlay.style.display = 'none';
+      overlay.innerHTML = '';
+      _orig();
+    };
+
+    // Show the styled start screen (replaces game.js plain text)
+    showStart();
+  </script>
+</body>
+</html>
